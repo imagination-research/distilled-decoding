@@ -1,0 +1,685 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta property="og:title"
+        content="Distilled Decoding 1: One-step Sampling of Image Auto-regressive Models with Flow Matching" />
+    <meta property="og:url" content="https://dd.github.io/" />
+    <meta property="og:image:width" content="2048" />
+    <meta property="og:image:height" content="1152" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        .container {
+            text-align: center;
+        }
+        .image-container-les {
+            display: flex;
+            justify-content: space-around; /* 居中并控制图片间隔 */
+            align-items: center; /* 图片和标题居中对齐 */
+            gap: 50px; /* 控制图片之间的间隔 */
+            width: auto;
+            height: auto;
+        }
+
+        .image-block {
+            text-align: center; /* 使图片和标题居中 */
+          }
+          
+        .image-block .title {
+            margin-bottom: 10px; /* 标题与图片之间的间距 */
+            font-size: 1.8rem; /* 标题字体大小 */
+            font-weight: bold; /* 标题加粗 */
+            color: #333; /* 标题颜色 */
+        }
+
+        figure {
+            margin: 0; /* 去掉默认的图像间距 */
+            text-align: center; /* 居中图像和标题 */
+            overflow: visible;
+        }
+
+        img {
+            width: 200%; /* 控制图片宽度 */
+            height: 200%; /* 保持纵横比 */
+        }
+
+        figcaption {
+            margin-top: 10px; /* 图像与标题之间的间隔 */
+            font-size: 0.8rem; /* 设置标题字体大小 */
+        }
+
+        .images-container-1  {
+            display: flex;
+            justify-content: space-between; /* 横向排列 */
+          }
+        
+          /* 左边的图片 */
+          .left-image {
+            width: 80%; /* 控制左边图片的宽度 */
+            margin-right: 20px;
+          }
+        
+          /* 右边的部分 */
+          .right-images {
+            display: flex;
+            flex-direction: column; /* 纵向排列右边的两张图片 */
+            width: 65%; /* 控制右边容器的宽度 */
+          }
+        
+          /* 右边上面的图片 */
+          .right-image-top {
+            flex: 1; /* 使第二张图片占满上半部分 */
+            margin-bottom: 25px; /* 给上下图片之间加点间距 */
+          }
+        
+          /* 右边下面的图片 */
+          .right-image-bottom {
+            flex: 1; /* 使第三张图片占满下半部分 */
+          }
+    </style>
+
+
+    <title>Distilld Decoding</title>
+    <script>
+        var x = window.innerWidth;
+        function resizeFresh(){
+            if(x!=window.innerWidth)
+                location.reload();
+        }
+    </script>
+    <link rel="icon" type="image/x-icon" href="static/images/dd_logo.png">
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.js"></script>
+
+    <link rel="stylesheet" href="static/css/bulma.min.css">
+    <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="static/css/index.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+    <script defer src="static/js/fontawesome.all.min.js"></script>
+    <script src="static/js/bulma-carousel.min.js"></script>
+    <script src="static/js/index.js"></script>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</head>
+
+<body onresize="resizeFresh()">
+
+    <section class="hero banner">
+        <div class="hero-body">
+            <div class="container is-max-desktop">
+                <div class="columns is-centered">
+                    <div class="column has-text-centered">
+                        <h1 class="title is-1 publication-title">
+                            <span>Distilled Decoding 1:</span><br />
+                            One-step Sampling of Image Auto-regressive Models with Flow Matching</h1>
+                        <div class="is-size-5 publication-authors">
+                            <!-- Paper authors -->
+                            <span class="author-block">
+                                <a href="https://scholar.google.com/citations?hl=zh-CN&user=0LUhWzoAAAAJ" style="text-decoration: none; color: inherit;">Enshu Liu</a><sup>1*</sup>,</span>
+                            <span class="author-block">
+                                <a href="https://www.ningxuefei.cc/"  style="text-decoration: none; color: inherit;">Xuefei Ning</a><sup>1</sup>,</span>
+                            <span class="author-block">
+                                <a href="https://scholar.google.com/citations?user=j8JGVvoAAAAJ&hl=zh-CN" style="text-decoration: none; color: inherit;">
+                                    Yu Wang</a><sup>1</sup>,</span>
+                            <span class="author-block">
+                                <a href="https://www.microsoft.com/en-us/research/people/zinanlin/"  style="text-decoration: none; color: inherit;">
+                                    Zinan Lin</a><sup>2&#8224</sup>,                         
+                        </div>
+
+                        <div class="is-size-5 publication-authors">
+                            <span class="author-block"><sup>1</sup>Tsinghua University</span>
+                            &nbsp;
+                            <span class="author-block"><sup>2</sup>Microsoft Research</span><br>
+                            <span class="author-block"><sup>&#8224</sup>Project Advisor</span>
+                            <span class="author-block"><sup>*</sup>Work mostly done during an internship at Microsoft Research</span>
+                        </div>
+
+                        <div class="column has-text-centered">
+                            <div class="publication-links">
+                                <!-- <span class="link-block">
+                                    <a href="https://arxiv.org/abs/2412.04440" target="_blank"
+                                        class="external-link button is-normal is-rounded is-white">
+                                        <span class="icon">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </span>
+                                        <span>arXiv</span>
+                                    </a>
+                                </span>
+                                <span class="link-block">
+                                    <a href="https://huggingface.co/papers/2412.04440" target="_blank"
+                                        class="external-link button is-normal is-rounded is-white">
+                                        <span class="icon">🤗</span>
+                                        <span>Paper page</span>
+                                    </a>
+                                </span>        -->
+                                <span class="link-block">
+                                    <a href="https://github.com/imagination-research/distilled-decoding" target="_blank" class="external-link button is-normal is-rounded is-white">
+                                        <span class="icon">
+                                            <img src="./static/images/github-mark.png" alt="">
+                                        </span>
+                                        <span>Code</span>
+                                    </a>
+                                </span>    
+                                <!-- <span class="link-block">
+                                    <a href="https://youtu.be/gni-nzJQ9TI" target="_blank" class="external-link button is-normal is-rounded is-white">
+                                        <span class="icon">
+                                            <i class="fas fa-film"> </i>
+                                        </span>
+                                        <span>Video</span>
+                                    </a>
+                                </span>                              -->
+                            </div>
+                        </div>
+                        <div class="title"><b style="color: red;">VAR and LlamaGen can be made to generate images in just one step (up to 218<span id="times"></span> speed-up)!</b></div>
+                        <script>
+                            // 渲染 LaTeX 公式
+                            katex.render("\\times", document.getElementById("times"));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="title" style="text-align:center; font-size: 2.5em;"><b>Text-to-image Generation</b></div>
+    <section class="hero is-small"> 
+        <div class="hero-body">
+            <div class="image-container-les">
+                <div class="image-block">
+                    <div class="title" style="font-size: 1.2em;"><b>LlamaGen (256-step generation) </b></div>
+                    <figure>
+                        <img src="./static/videos/t2i_baseline_small_keep.gif" alt="t2ibaseline">
+                        <!-- <figcaption>Examples on text-to-image task by LlamaGen with 256 steps. </figcaption> -->
+                    </figure>
+                </div>
+                <div class="image-block">
+                    <div class="title" style="font-size: 1.2em;"><b>Distilled Decoding (DD) (2-step generation, 93<span id="inline-math3"></span> speedup)</b></div>
+                    <figure>
+                        <img src="./static/videos/t2i_dd_step2_small_keep.gif" alt="t2idd">
+                        <!-- <figcaption><b>Examples on text-to-image task by distilled decoding (DD) with 2 steps (93<span id="inline-math3"></span> speedup).</b></figcaption> -->
+                    </figure>
+                </div>
+            </div>
+            <script>
+                // 渲染 LaTeX 公式
+                katex.render("\\times", document.getElementById("inline-math3"));
+            </script>
+    </section>
+    
+    <div class="title" style="text-align:center; font-size: 2.5em;" ><b>Generation on ImageNet-256</b></div>
+    <section class="hero is-small">
+      <div class="hero-body">
+        <div class="image-container-les">
+            <div class="image-block">
+                <div class="title" style="font-size: 1.2em;"><b>LlamaGen (256-step generation)</b></div>
+                <figure>
+                    <img src="./static/videos/baseline_small_keep.gif" alt="baseline">
+                    <!-- <figcaption>Generated results on ImageNet-256 by LlamaGen with 256 steps. </figcaption> -->
+                </figure>
+            </div>
+            <div class="image-block">
+                <div class="title" style="font-size: 1.2em;"><b>Distilled Decoding (DD) (2-step generation, 118<span id="inline-math1"></span> speedup)</b></div>
+                <figure>
+                    <img src="./static/videos/dd_step2_small_keep.gif" alt="dd2step">
+                    <!-- <figcaption><b>Generation results on ImageNet-256 by distilled decoding (DD) with 2 steps (118<span id="inline-math1"></span> speedup).</b></figcaption> -->
+                </figure>
+            </div>
+            <div class="image-block">
+                <div class="title" style="font-size: 1.2em;"><b>Distilled Decoding (DD) (1-step generation, 217<span id="inline-math2"></span> speedup)</b></div>
+                <figure>
+                    <img src="./static/videos/dd_step1_small_keep.gif" alt="dd1step">
+                    <!-- <figcaption><b>Generation results on ImageNet-256 by our distilled decoding (DD) with 1 steps (217<span id="inline-math2"></span> speedup).</b></figcaption> -->
+                </figure>
+            </div>
+        </div>
+        <script>
+            // 渲染 LaTeX 公式
+            katex.render("\\times", document.getElementById("inline-math1"));
+            katex.render("\\times", document.getElementById("inline-math2"));
+        </script>
+      </div>
+  </section>
+  <br>
+  <section class="hero is-small">
+    <div class="hero-body">
+      <div class="image-container-les">
+          <div class="image-block">
+              <div class="title" style="font-size: 1.2em;"><b>VAR (10-step generation)</b></div>
+              <figure>
+                  <img src="./static/videos/var_baseline.gif" alt="baseline">
+                  <!-- <figcaption>Generated results on ImageNet-256 by VAR with 10 steps. </figcaption> -->
+              </figure>
+          </div>
+          <div class="image-block">
+              <div class="title" style="font-size: 1.2em;"><b>Distilled Decoding (DD) (2-step generation, 3.7<span id="timesvar2"></span> speedup)</b></div>
+              <figure>
+                  <img src="./static/videos/var_dd_step2.gif" alt="dd2step">
+                  <!-- <figcaption><b>Generation results on ImageNet-256 by distilled decoding (DD) with 2 steps (3.7<span id="timesvar2"></span>).</b></figcaption> -->
+              </figure>
+          </div>
+          <div class="image-block">
+              <div class="title" style="font-size: 1.2em;"><b>Distilled Decoding (DD) (1-step generation, 6.3<span id="timesvar1"></span> speedup)</b></div>
+              <figure>
+                  <img src="./static/videos/var_dd_step1.gif" alt="dd1step">
+                  <!-- <figcaption><b>Generation results on ImageNet-256 by our distilled decoding (DD) with 1 steps (6.3<span id="timesvar1"></span>).</b></figcaption> -->
+              </figure>
+          </div>
+      </div>
+      <script>
+          // 渲染 LaTeX 公式
+          katex.render("\\times", document.getElementById("timesvar2"));
+          katex.render("\\times", document.getElementById("timesvar1"));
+      </script>
+    </div>
+  </section>
+  
+  <script>
+      // 监听轮播的切换事件
+      document.getElementById('results-carousel').addEventListener('slide.bs.carousel', function (event) {
+          // 在切换前暂停所有视频
+          const videos = document.querySelectorAll('.carousel .card video');
+          videos.forEach(video => {
+              video.pause();
+              video.currentTime = 0; // 重置视频的播放进度
+          });
+  
+          // 在当前激活的卡片中播放视频
+          const activeCard = event.relatedTarget;
+          const activeVideo = activeCard.querySelector('video');
+          if (activeVideo) {
+              activeVideo.play();
+          }
+      });
+  
+      // 在页面加载时，默认播放第一个视频
+      document.addEventListener('DOMContentLoaded', () => {
+          const firstVideo = document.querySelector('.carousel .card video');
+          if (firstVideo) {
+              firstVideo.play();
+          }
+      });
+  </script>
+
+  <script>
+    // 监听轮播的切换事件
+    document.getElementById('carousel-container').addEventListener('slide.bs.carousel', function (event) {
+        // 在切换前暂停所有视频
+        const videos = document.querySelectorAll('.carousel .card video');
+        videos.forEach(video => {
+            video.pause();
+            video.currentTime = 0; // 重置视频的播放进度
+        });
+
+        // 在当前激活的卡片中播放视频
+        const activeCard = event.relatedTarget;
+        const activeVideo = activeCard.querySelector('video');
+        if (activeVideo) {
+            activeVideo.play();
+        }
+    });
+
+    // 在页面加载时，默认播放第一个视频
+    document.addEventListener('DOMContentLoaded', () => {
+        const firstVideo = document.querySelector('.carousel .card video');
+        if (firstVideo) {
+            firstVideo.play();
+        }
+    });
+</script>
+  
+    <!-- Paper abstract -->
+    <section class="section hero is-light">
+        <div class="container is-max-desktop">
+            <div class="columns is-centered has-text-centered">
+                <div class="column is-four-fifths">
+                    <h2 class="title is-3">Abstract</h2>
+                    <div class="content has-text-justified">
+                        <p>
+                            Autoregressive (AR) models have recently achieved state-of-the-art performance in text and image generation. However, their primary limitation is slow generation speed due to the token-by-token process. We ask an ambitious question: <b>can a pre-trained AR model be adapted to generate outputs in just <em>one or two steps</em></b>? If successful, this would significantly advance the development and deployment of AR models. We notice that existing works that attempt to speed up AR generation by generating multiple tokens at once fundamentally cannot capture the output distribution due to the conditional dependencies between tokens, limiting their effectiveness for few-step generation. To overcome this, we propose <b>Distilled Decoding (DD)</b>, which leverages flow matching to create a deterministic mapping from Gaussian distribution to the output distribution of the pre-trained AR model. We then train a network to distill this mapping, enabling few-step generation. 
+                            The entire training process of DD does <em>not</em> need the training data of the original AR model (as opposed to some other methods), thus making DD more practical.
+                            We evaluate DD on state-of-the-art <em>image</em> AR models and present promising results. For VAR, which requires 10-step generation (680 tokens), DD enables one-step generation <b>(6.3<span id="inline-math4"></span> speed-up)</b>, with an acceptable increase in FID from 4.19 to 9.96 on ImageNet-256. Similarly, for LlamaGen, DD reduces generation from 256 steps to 1, achieving an <b>217.8<span id="inline-math5"></span> speed-up</b> with a comparable FID increase from 4.11 to 11.35 on ImageNet-256. In both cases, baseline methods completely fail with FID scores >100. 
+                            DD also excels on <em>text-to-image generation</em>, reducing the generation from 256 steps to 2 for LlamaGen with minimal FID increase from 25.70 to 28.95.
+                            As the first work to demonstrate the possibility of one-step generation for image AR models, DD challenges the prevailing notion that AR models are inherently slow, and opens up new opportunities for efficient AR generation.
+                        </p>
+                        <script>
+                            // 渲染 LaTeX 公式
+                            katex.render("\\times", document.getElementById("inline-math4"));
+                            katex.render("\\times", document.getElementById("inline-math5"));
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End paper abstract -->
+
+    <div class="container">
+      <!-- Highlight title -->
+      <p style="text-align: center;">
+        <span class="section" style="font-size: 1.5em;"><b>Highlight</b></span>
+      </p>
+    
+      <!-- Highlight list -->
+      <div style="text-align: center; max-width: 1000px; margin: auto;">
+        <ul style="list-style: none; padding: 0; font-size: 1.2em; text-align: left;">
+          <li>🌟 We thoroughly analyzed the reasons why existing methods fail to achieve extremely few-step generation.</li>
+          <li>🌟 DD novelly combines the AR method with flow-matching to tackle the problem.</li>
+          <li>🌟 For the first time, DD demonstrates the feasibility of 1-step sampling with SOTA image AR methods, including VAR and LlamaGen.</li>
+        </ul>
+      </div>
+    </div>
+    
+<p class="section">&nbsp;</p>
+
+<section class="image-carousel">
+  <div id="carousel1" class="carousel-container">
+    <!-- <h2 class="title is-3"> Method</h2> -->
+    <p style="text-align: center;">
+        <span class="section" style="font-size: 2.05em;"><b>Method</b></span>
+      </p>
+    <p style="text-align: left;">
+        <span style="font-size: 24px; font-weight: bold;"><b>Training Few-step AR is non-trivial</b></span><br>
+        Simultaneously predicting the probabilities of a set of tokens is a common method for reducing the number of autoregressive (AR) steps. However, we demonstrate that this method fails when sampling with very few steps.
+        The target of this method, <span id="target_dist"></span>, completely ignores the correlations between the predicted tokens, creating a gap with the ground truth distribution <span id="real_dist"></span>.
+        When the number of steps is small, the size of the set becomes large, resulting in significant performance degradation. Below are examples of <b>one-step generation</b> using this method.
+    </p>
+    <div class="image-container-les">
+        <img src="./static/images/0.png" alt="Failed example 0" style="width: 200px; height: 200px;">
+        <img src="./static/images/1.png" alt="Failed example 1" style="width: 200px; height: 200px;">
+        <img src="./static/images/2.png" alt="Failed example 2" style="width: 200px; height: 200px;">
+    </div>
+    <p style="text-align: left;">
+        <span style="font-size: 24px; font-weight: bold;"><b>The Core Idea of DD</b></span><br>
+    </p>
+    <p style="text-align: left;">
+        (1) DD uses a <i>pre-trained AR model</i> and <i>flow-matching</i> to construct the <b>mapping from a noise token to a data token</b> (see figure left).<br>
+        (2) Next, DD constructs a trajectory that gradually <b>transforms a sequence where all tokens are noise into a sequence where all tokens are generated data</b> (see figure right). Each noise sequence corresponds to a unique traejctory.<br>
+        (3) Based on this trajectory, DD distills a model to perform few-step sampling (see figure right).
+    </p>
+  <div class="image-container-les">
+    <figure>
+        <img src="./static/images/flow_matching.png" alt="AR Flow Matching">
+        <figcaption>AR Flow Matching, where <span id="qi"></span> is generated token from the codebook and <span id="epsi"></span> is noise token independently drawn from standard Gaussian distribution.</figcaption>
+    </figure>
+    <figure>
+        <img src="./static/images/training_generation_workflow.png" alt="Workflow">
+        <figcaption>Training and Generation Workflow, where <span id="qi2"></span> is generated token from the codebook and <span id="epsi2"></span> is noise token independently drawn from a standard Gaussian distribution.</figcaption>
+    </figure>
+    <script>
+        // 渲染 LaTeX 公式
+        katex.render("q_i", document.getElementById("qi"));
+        katex.render("\\epsilon_i", document.getElementById("epsi"));
+        katex.render("q_i", document.getElementById("qi2"));
+        katex.render("\\epsilon_i", document.getElementById("epsi2"));
+    </script>
+  </div>
+  <div>
+    <p style="text-align: left;">
+        <span style="font-size: 24px; font-weight: bold;"><b>The detailed workflow of DD</b></span><br>
+        As discussed above, DD uses a pre-trained AR model and flow-matching to construct a trajecotry and distills the model based on it. The detailed workflow of DD consists of three parts:<br>
+        (1) <b>Dataset generation</b>. We first construct a dataset of noise-data pairs. Specifically, we randomly sample noise sequences from a standard Gaussian distribution and calculate the endpoint of the trajectory.<br>
+        (2) <b>Training</b>. We then distill a model to predict the endpoint of the trajectory given a specific intermediate point, including the starting point, as input.<br>
+        (3) <b>Sampling</b>. Finally, we conduct sampling from a pure noise sequence. We can revert to a closer intermediate point after obtaining the final value and re-predict it for higher performance. Alternatively, we can involve the pre-trained AR model in this process to achieve a finer quality-time trade-off.<br>
+    </p>
+    <script>
+        // 渲染 LaTeX 公式
+        katex.render("\\prod_{i=k+1}^{m}p(q_i|q_{k},\\cdots,q_1)", document.getElementById("target_dist"));
+        katex.render("p(q_{m},\\cdots,q_{k+1}|q_{k},\\cdots,q_1)", document.getElementById("real_dist"));
+    </script>
+  </div>
+    &nbsp;
+  </div>
+  <hr>
+
+</section>
+
+
+<section class="image-layout">
+    <p style="text-align: center;">
+        <span class="section" style="font-size: 2.05em;"><b>Quantitative Results</b></span>
+      </p>
+    <div class="container is-max-desktop">
+      <div class="images-container-1">
+        <!-- 左侧第一张图片 -->
+        <div class="left-image">
+          <figure>
+            <img src="./static/images/main_results.png" alt="Main Results">
+            <figcaption>Main Results on ImageNet-256.</figcaption>
+          </figure>
+        </div>
+  
+        <!-- 右侧，第二张和第三张图片 -->
+        <div class="right-images">
+          <div class="right-image-top">
+            <figure>
+              <img src="./static/images/teacher_sampling.png" alt="AR Flow Matching">
+              <figcaption>Results of teacher-involved sampling on ImageNet-256. The notation <i>pre-trained-n-m</i> means that the pre-trained AR model is used to re-generate n-th to m-1-th tokens.</figcaption>
+            </figure>
+          </div>
+          <div class="right-image-bottom">
+            <figure>
+              <img src="./static/images/t2i_results.png" alt="T2I Results">
+              <figcaption>Results of text-to-image task on LAION-COCO. FIDs are caculated with 5k images.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+
+<section class="image-carousel">
+    <div class="container is-max-desktop">
+    <div id="carousel2" class="carousel-container">
+      <!-- <h2 class="title is-3"> Method</h2> -->
+      <p style="text-align: Center;">
+          <span style="font-size: 2.05em;"><b>More Qualitative Results</b></span><br>
+      </p>
+      <p style="text-align: left;">
+      We demonstrate more generated examples here.<br>
+      </p>
+      <p style="text-align: Center;">
+        <span style="font-size: 24px; font-weight: bold;"><b>Lable-conditional Generation</b></span><br><br>
+      </p>
+
+      <div id="results-carousel" class="carousel results-carousel" data-bs-ride="carousel">
+          <figure>
+              <figcaption>&nbsp;&nbsp;&nbsp;&nbsp;   DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LlamaGen<br>
+                &nbsp; 1-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 42-step &nbsp;&nbsp;&nbsp;&nbsp; 256-step</figcaption-1>
+              <img src="./static/images/llamagen1_update_samenoise.png" alt="llamagen1" style="width:200%; height:200%">
+          </figure>
+          <figure>
+            <figcaption>&nbsp;&nbsp;&nbsp;&nbsp;   DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LlamaGen<br>
+                &nbsp; 1-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 42-step &nbsp;&nbsp;&nbsp;&nbsp; 256-step</figcaption-1>
+              <img src="./static/images/llamagen2_update_samenoise.png" alt="llamagen2">
+          </figure>
+          <figure>
+            <figcaption>&nbsp;   DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VAR<br>
+                &nbsp; 1-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4-step &nbsp;&nbsp;&nbsp;&nbsp; 10-step</figcaption-1>
+              <img src="./static/images/var1_update_samenoise.png" alt="var1">
+          </figure>
+          <figure>
+            <figcaption>&nbsp;   DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VAR<br>
+                &nbsp; 1-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2-step &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 4-step &nbsp;&nbsp;&nbsp;&nbsp; 10-step</figcaption-1>
+            <img src="./static/images/var2_update_samenoise.png" alt="var2">
+          </figure>
+      </div>
+      
+      &nbsp;
+      <br><br><br>
+      <p style="text-align: Center;">
+        <span style="font-size: 24px; font-weight: bold;"><b>Text-to-Image Generation</b></span><br>
+      </p>
+      <p style="text-align: left;">
+        Prompts without * are from the LAION-COCO dataset, while those marked with * were created by us.
+      </p>
+      <div class="container is-max-desktop">
+        <div id="carousel-container-1" class="carousel-container-1" data-bs-ride="carousel">
+            <!-- 上面一行的标题 -->
+            <p style="text-align: Center;">
+                <span style="font-size: 16px; font-weight: bold;"><b>DD-2steps</b></span><br>
+              </p>
+            
+            <!-- 第一行的图片和文字 -->
+            <div id="results-carousel" class="carousel results-carousel" data-bs-ride="carousel">
+                <figure>
+                    <img src="./static/images/t2i/dd_1.png" alt="t2idd1">
+                    <figcaption>Red Celtic Heart Knot T-Shirt. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_2.png" alt="t2idd2">
+                    <figcaption>2 Drawer Nightstand by PoliVaz. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_3.png" alt="t2idd3">
+                    <figcaption>1 Pottery Barn Emery Linen Drapes Panels Curtains Blackout Lining 50x63 Red. </figcaption>
+                </figure>
+                <figure>
+                  <img src="./static/images/t2i/dd_4.png" alt="t2idd4">
+                  <figcaption>ToyWatch Men's Plasteramic Diver Watch. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_5.png" alt="t2idd5">
+                    <figcaption>Activate Upholstered Fabric Armchair. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_6.png" alt="t2idd7">
+                    <figcaption>Butterfly Women's T-Shirt. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_7.png" alt="t2idd6">
+                    <figcaption>A pair of shoes on the floor*. </figcaption>
+                </figure>
+                <figure>
+                  <img src="./static/images/t2i/dd_8.png" alt="t2idd8">
+                  <figcaption>A tree on a hill*. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/dd_9.png" alt="t2idd8">
+                    <figcaption>A bowl of fresh fruits*. </figcaption>
+                  </figure>
+            </div>
+            
+            <!-- 下面一行的标题 -->
+            <p style="text-align: Center;">
+                <span style="font-size: 16px; font-weight: bold;"><b>LlamaGen-256steps</b></span><br>
+            </p>
+            
+            <!-- 第二行的图片和文字 -->
+            <div id="results-carousel" class="carousel results-carousel" data-bs-ride="carousel">
+                <figure>
+                    <img src="./static/images/t2i/teacher_1.png" alt="t2idd1">
+                    <figcaption>Red Celtic Heart Knot T-Shirt. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_2.png" alt="t2idd2">
+                    <figcaption>2 Drawer Nightstand by PoliVaz. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_3.png" alt="t2idd3">
+                    <figcaption>1 Pottery Barn Emery Linen Drapes Panels Curtains Blackout Lining 50x63 Red. </figcaption>
+                </figure>
+                <figure>
+                  <img src="./static/images/t2i/teacher_4.png" alt="t2idd4">
+                  <figcaption>ToyWatch Men's Plasteramic Diver Watch. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_5.png" alt="t2idd5">
+                    <figcaption>Activate Upholstered Fabric Armchair. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_6.png" alt="t2idd7">
+                    <figcaption>Butterfly Women's T-Shirt. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_7.png" alt="t2idd6">
+                    <figcaption>A pair of shoes on the floor*. </figcaption>
+                </figure>
+                <figure>
+                  <img src="./static/images/t2i/teacher_8.png" alt="t2idd8">
+                  <figcaption>A tree on a hill*. </figcaption>
+                </figure>
+                <figure>
+                    <img src="./static/images/t2i/teacher_9.png" alt="t2idd8">
+                    <figcaption>A bowl of fresh fruits*. </figcaption>
+                  </figure>
+            </div>
+        </div>
+    </div>
+    </div>
+    <hr>
+  </div>
+  </section>
+
+
+
+    <!--BibTex citation -->
+    <section class="section" id="BibTeX">
+        <p style="text-align: left;">
+        <div class="container is-max-desktop content">
+            <h2 class="title">BibTeX</h2>
+            <pre><code>TODO</code></pre>
+        <!-- <span class="link-block">
+            <a href="https://karine-h.github.io/T2I-CompBench-new/" target="_blank"
+                class="external-link button is-normal is-rounded is-black">
+                <span class="icon">
+                    <img src="./static/images/github-mark-white.png" alt="">
+                </span>
+                <span>T2I-CompBench</span>
+            </a>
+        </span>
+        <span class="link-block">
+            <a href="https://t2v-compbench.github.io/" target="_blank"
+                class="external-link button is-normal is-rounded is-black">
+                <span class="icon">
+                    <img src="./static/images/github-mark-white.png" alt="">
+                </span>
+                <span>T2V-CompBench</span>
+            </a>
+        </span>
+        <span class="link-block">
+            <a href="https://zhenyuw16.github.io/GenArtist_page/" target="_blank"
+                class="external-link button is-normal is-rounded is-black">
+                <span class="icon">
+                    <img src="./static/images/github-mark-white.png" alt="">
+                </span>
+                <span>GenArtist</span>
+            </a>
+        </span>                 -->
+        </div></p>
+    </section>
+    <!--End BibTex citation -->
+
+
+    <footer class="footer">
+        <div class="container">
+            <div class="columns is-centered">
+                <div class="column is-8">
+                    <div class="content">
+                        <p>
+                            This page was built based on <a
+                                href="https://karine-h.github.io/GenMAC/"
+                                target="_blank">GenMAC project page</a> which was adopted from the <a
+                                href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+                            You are free to borrow the of this website, we just ask that you link back to this page in
+                            the footer. <br> This website is licensed under a <a rel="license"
+                                href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                                Commons Attribution-ShareAlike 4.0 International License</a>.
+                        </p>
+                        <p class="has-text-centered">Total clicks: <span id="busuanzi_value_site_pv"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

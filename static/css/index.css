@@ -1,0 +1,308 @@
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+
+.footer .icon-link {
+    font-size: 25px;
+    color: #000;
+}
+
+.link-block a {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+
+.publication-title {
+}
+
+.publication-banner {
+  max-height: parent;
+
+}
+
+.publication-banner video {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  object-fit: fit;
+}
+
+.publication-header .hero-body {
+}
+
+.publication-title {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+    font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+    color: #555;
+    width: fit-content;
+    font-weight: bold;
+}
+
+.publication-awards {
+    color: #ff3860;
+    width: fit-content;
+    font-weight: bolder;
+}
+
+.publication-authors {
+}
+
+.publication-authors a {
+   color: #aaa !important;
+   text-decoration: underline;
+}
+
+.publication-authors a:hover {
+    text-decoration: none;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-banner img {
+}
+
+.publication-authors {
+  /*color: #4286f4;*/
+}
+
+.publication-video {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+
+    overflow: hidden;
+    border-radius: 10px !important;
+}
+
+.publication-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.publication-body img {
+}
+
+/* .results-carousel {
+  overflow: hidden;
+}
+
+.results-carousel .item {
+  margin: 5px;
+  overflow: hidden;
+  padding: 20px;
+  font-size: 0;
+}
+
+.results-carousel video {
+  margin: 0;
+} */
+
+.results-carousel {
+  display: flex; /* 使用 flexbox 布局 */
+  flex-wrap: nowrap; /* 不允许换行 */
+  justify-content: space-between; /* 卡片之间的间距 */
+  overflow: visible; /*隐藏溢出的内容 */
+  gap:120px; /* 设置每张图片之间的间隔 */
+}
+
+.results-carousel .card {
+  flex: 0 0 calc(70% - 30px);  /* 每个卡片宽度为 50% 减去 margin */
+  margin: 30px;                /* 每个卡片之间的间距 */
+  overflow: visible;            /* 隐藏溢出的内容 */
+}
+
+.results-carousel figure {
+  flex: 0 0 100%; /* 每个 figure 占满容器宽度 */
+  transform: scale(1.1);
+  overflow: visible;
+  margin: 30px;
+  position: relative;
+}
+
+.results-carousel img {
+  width: 150%; /* 确保图片宽度为容器的 100% */
+  height: auto; /* 高度自适应 */
+  object-fit: cover; /* 保持图片的比例 */
+  overflow: visible;
+}
+
+
+.slider-pagination .slider-page {
+  background: #000000;
+}
+
+.eql-cntrb { 
+  font-size: smaller;
+}
+
+section.banner {
+    /* background-image: url(../images/overlay.png), url(../images/head.png); */
+    background-image: url(../images/overlay.png), url(../images/background.png);
+    color: #aaa;
+    background-position: center top;
+    background-size: cover;
+    background-attachment: scroll;
+}
+
+.publication-title {
+    color: #fff;
+}
+
+.card-image.js-modal-trigger {
+    cursor: pointer;
+}
+/* .results-carousel .card {
+    margin: 20px;
+    overflow: hidden;
+} */
+
+.column .card {
+    height: 100%;
+}
+
+.genmac-icon::before {
+  background-image: url(../images/genmac_logo.png);
+  background-size: 1em 1em;
+  display: inline-block;
+  width: 1em; 
+  height: 0.9em;
+  content:"";
+}
+
+
+.gallery {
+  perspective: 1000px; /* 设置视角，决定3D效果 */
+}
+
+.image-container {
+  width: 300px;
+  height: 200px;
+  position: relative;
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s; /* 动画时长 */
+}
+
+.image-container:hover .flipper {
+  transform: rotateY(180deg); /* 翻转 */
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* 隐藏反面 */
+}
+
+.front {
+  z-index: 2;
+  transform: rotateY(0deg); /* 默认正面 */
+}
+
+.back {
+  transform: rotateY(180deg); /* 背面 */
+}
+
+
+
+.image-carousel {
+  max-width: 1200px;  /* 控制轮播容器的最大宽度 */
+  margin: 0 auto;    /* 居中 */
+  position: relative;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;  /* 隐藏超出容器的内容 */
+}
+
+.carousel-images {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+  width: auto;  /* 保证图片保持原始宽度 */
+  max-width: 100%;  /* 宽度最大为容器宽度 */
+  height: auto;  /* 高度自适应 */
+}
+
+.carousel-dots {
+  text-align: center;
+  position: absolute;
+  bottom: 10px;   /* 圆点离图片底部一定距离 */
+  width: 100%;
+  display: flex;
+  justify-content: center;  /* 圆点居中显示 */
+}
+
+.dot {
+  height: 15px;
+  width: 15px;
+  margin: 0 5px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.dot:hover {
+  background-color: #717171;
+}
+
+.active {
+  background-color: #717171;
+}
+
+
+/* 轮播容器 */
+.video-carousel-container {
+  position: relative;
+  max-width: 800px; /* 轮播的宽度 */
+  margin: 0 auto;
+  overflow: hidden; /* 隐藏溢出的内容 */
+}
+
+
+
+
+
+
+
+
