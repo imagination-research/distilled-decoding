@@ -1,6 +1,6 @@
 # Distilled Decoding 1: One-step Sampling of Image Auto-regressive Models with Flow Matching
 
-**[[paper (arXiv)](#)]**
+**[[paper (arXiv)](https://arxiv.org/abs/2412.17153)]**
 **[[code](https://github.com/imagination-research/distilled-decoding)]**
 **[[website](https://imagination-research.github.io/distilled-decoding)]**
 
@@ -18,5 +18,6 @@ We evaluate `DD` on state-of-the-art *image* AR models and present promising res
 As the first work to demonstrate the possibility of one-step generation for image AR models, `DD` challenges the prevailing notion that AR models are inherently slow, and opens up new opportunities for efficient AR generation.
 
 ## News
+* `12/24/2024`: The paper is released [here](https://arxiv.org/abs/2412.17153)
 * `12/22/2024`: The project website is released [here](https://imagination-research.github.io/distilled-decoding).
 * `12/22/2024`: The code and the pre-trained `DD` models are currently under Microsoft's internal review. We will release them here once the review is done. Please star/watch the repo to get the latest update.
