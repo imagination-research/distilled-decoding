@@ -5,7 +5,7 @@
 **[[website](https://imagination-research.github.io/distilled-decoding)]**
 
 
-**Authors:** [Enshu Liu (Tsinghua)](https://scholar.google.com/citations?user=0LUhWzoAAAAJ&hl=en)\*, [Xuefei Ning (Tsinghua)](https://www.ningxuefei.cc/), [Yu Wang (Tsinghua)](https://scholar.google.com/citations?user=j8JGVvoAAAAJ&hl=en), [Zinan Lin (Microsoft Research)](https://zinanlin.me/)†
+**Authors:** [Enshu Liu (Tsinghua)](https://scholar.google.com/citations?user=0LUhWzoAAAAJ&hl=en)\*, [Xuefei Ning (Tsinghua)](https://nics-effalg.com/ningxuefei/), [Yu Wang (Tsinghua)](https://scholar.google.com/citations?user=j8JGVvoAAAAJ&hl=en), [Zinan Lin (Microsoft Research)](https://zinanlin.me/)†
 
 * \* Work mostly done during Enshu Liu's internship at Microsoft Research
 
@@ -18,6 +18,6 @@ We evaluate `DD` on state-of-the-art *image* AR models and present promising res
 As the first work to demonstrate the possibility of one-step generation for image AR models, `DD` challenges the prevailing notion that AR models are inherently slow, and opens up new opportunities for efficient AR generation.
 
 ## News
-* `12/24/2024`: The paper is released [here](https://arxiv.org/abs/2412.17153)
+* `12/24/2024`: The paper is released [here](https://arxiv.org/abs/2412.17153).
 * `12/22/2024`: The project website is released [here](https://imagination-research.github.io/distilled-decoding).
 * `12/22/2024`: The code and the pre-trained `DD` models are currently under Microsoft's internal review. We will release them here once the review is done. Please star/watch the repo to get the latest update.
