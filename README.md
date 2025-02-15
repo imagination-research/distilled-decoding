@@ -1,6 +1,6 @@
 # Distilled Decoding 1: One-step Sampling of Image Auto-regressive Models with Flow Matching
 
-**[[paper (arXiv)](https://arxiv.org/abs/2412.17153)]**
+**[[paper (ICLR25)](https://arxiv.org/abs/2412.17153)]**
 **[[code](https://github.com/imagination-research/distilled-decoding)]**
 **[[website](https://imagination-research.github.io/distilled-decoding)]**
 
