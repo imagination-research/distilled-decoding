@@ -18,7 +18,12 @@ We evaluate `DD` on state-of-the-art *image* AR models and present promising res
 `DD` also excels on *text-to-image generation*, reducing the generation from 256 steps to 2 for LlamaGen with minimal FID increase from 25.70 to 28.95. 
 As the first work to demonstrate the possibility of one-step generation for image AR models, `DD` challenges the prevailing notion that AR models are inherently slow, and opens up new opportunities for efficient AR generation.
 
+## The code has been released in a new Microsoft repository (https://github.com/microsoft/distilled_decoding) for compliance reasons
+
 ## News
+* `4/21/2025`: **The DD models and inference code for ImageNet-256 have been released!** The DD training code and text-to-image models are undergoing an additional Microsoft's internal review process and will be released at a later date.
+  * Code: https://github.com/microsoft/distilled_decoding 
+  * Models: https://huggingface.co/microsoft/distilled_decoding
 * `12/24/2024`: The paper is released [here](https://arxiv.org/abs/2412.17153).
 * `12/22/2024`: The project website is released [here](https://imagination-research.github.io/distilled-decoding).
 * `12/22/2024`: The code and the pre-trained `DD` models are currently under Microsoft's internal review. We will release them here once the review is done. Please star/watch the repo to get the latest update.
